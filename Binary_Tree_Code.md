@@ -1,151 +1,282 @@
 #include <iostream>
-#include <stdio.h>
-#include <conio.h>
-#include <stdlib.h>
-struct Node{
-	int data;
-	Node *kiri;
-	Node *kanan;
-};
-int count;
-void tambah(Node **root, int databaru){
-	if((*root) == NULL){
-		Node *baru;
-		baru = new Node;
-		baru->data = databaru;
-		baru->kiri = NULL;
-		baru->kanan = NULL;
-		(*root) = baru;
-		(*root)->kiri = NULL;
-		(*root)->kanan = NULL;
-		printf("Data telah Dimasukkan");
-	}
-	else if(databaru < (*root)->data){
-	tambah(&(*root)->kiri,databaru);
-	}
-	else if(databaru > (*root)->data){
-	tambah(&(*root)->kanan,databaru);
-	}
-	else if(databaru == (*root)->data){
-	printf("Data sudah ada!!");
-	}
-}
-void preOrder(Node *root){
-	if(root != NULL){
-	printf("%d " ,root->data);
-	preOrder(root->kiri);
-	preOrder(root->kanan);
-	}
-}
-void inOrder(Node *root){
-	if(root != NULL){
-	inOrder(root->kiri);
-	printf("%d ",root->data);
-	inOrder(root->kanan);
-	}
-}
-void postOrder(Node *root){
-	if(root != NULL){
-	postOrder(root->kiri);
-	postOrder(root->kanan);
-	printf("%d ",root->data);
-	}
-}
-void search(Node **root, int cari){
-	if((*root) == NULL){
-	printf("Maaf,Data tidak ditemukan!");
-	}
-	else if(cari < (*root)->data){
-	search(&(*root)->kiri,cari);
-	}
-	else if(cari > (*root)->data){
-	search(&(*root)->kanan,cari);
-	}
-	else if(cari == (*root)->data)
-	printf("Data ditemukan!!!");
-	}
+#define SPACE 10
 
-void hapus(Node **root, int del)
-{
-    if ((*root) == NULL) {
-        printf("Data tidak ada!!");
-    }
-    else if (del < (*root)->data) {
-        hapus(&(*root)->kiri, del);
-    }
-    else if (del > (*root)->data) {
-        hapus(&(*root)->kanan, del);
-    }
-      else if (del == (*root)->data) {
-        Node *temp = *root;
-        *root = NULL;
-        delete temp;
-        printf("Data telah Terhapus");
+using namespace std;
+
+// Deklarasi kelas Node
+class Node {
+public:
+int data;
+Node* left;
+Node* right;
+
+// Konstruktor default
+Node() {
+    data = 0;
+    left = NULL;
+    right = NULL;
+}
+
+// Konstruktor dengan parameter
+Node(int v) {
+    data = v;
+    left = NULL;
+    right = NULL;
+}
+};
+
+// Deklarasi kelas BinaryTree
+class BinaryTree {
+public:
+Node* root;
+
+// Konstruktor default
+BinaryTree() {
+    root = NULL;
+}
+
+// Fungsi untuk memeriksa apakah Binary Tree kosong
+bool isTreeEmpty() {
+    return root == NULL;
+}
+
+// Fungsi untuk menyisipkan (insert) data ke dalam Binary Tree
+void insert(int val) {
+    Node* new_node = new Node(val);
+
+    if (root == NULL) {
+        root = new_node;
+        cout << "Data Berhasil di Masukkan" << endl;
+    } else {
+        insertNode(root, new_node);
     }
 }
-int main(){
-int pil,cari,del;
-Node *pohon;
-pohon = NULL;
-do{
-int data;
-system("cls");
-printf("       PROGRAM TREE LANJUTAN    \n");
-printf("================================\n");
-printf("   1. Masukkan Data             \n");
-printf("   2. Transverse                \n");
-printf("   3. Cari                      \n");
-printf("   4. Hapus                     \n");
-printf("   5. Clear Data                \n");
-printf("   6. Keluar                    \n");
-printf("================================\n");
-printf("Masukkan Pilihan Anda : ");
-scanf("%d",&pil);
-switch(pil){
-	case 1:
-	printf("Masukkan data baru : ");
-	scanf("%d", &data);
-	tambah(&pohon,data);
-	break;
-	case 2:
-	if (pohon != NULL) {
-	    printf("preOrder: ");
-	    preOrder(pohon);
-	} else {
-	    printf("preOrder: Data masih kosong");
-	}
-	printf("\ninOrder: ");
-	if (pohon != NULL) {
-	    inOrder(pohon);
-	} else {
-	    printf("Data masih kosong");
-	}
-	printf("\npostOrder: ");
-	if (pohon != NULL) {
-	    postOrder(pohon);
-	} else {
-	    printf("Data masih kosong");
-	}
-	break;
-	case 3:
-	printf("Cari data : ");
-	scanf("%d", &cari);
-	search(&pohon,cari);
-	break;
-	case 4:
-	printf("Hapus data : ");
-	scanf("%d", &del);
-	hapus(&pohon,del);
-	break;
-	case 5:
-	pohon = NULL;
-	printf("Semua data telah terhapus");
-	break;
-	case 6:
-	return 0;
-	default:
-	printf("Maaf, pilihan Anda Salah");
-	}
-getch();
-}while(pil!=7);
+
+// Fungsi rekursif untuk menyisipkan (insert) data ke dalam Binary Tree
+void insertNode(Node* current, Node* new_node) {
+    if (new_node->data < current->data) {
+        if (current->left == NULL) {
+            current->left = new_node;
+            cout << "Data Berhasil di Masukkan" << endl;
+        } else {
+            insertNode(current->left, new_node);
+        }
+    } else if (new_node->data > current->data) {
+        if (current->right == NULL) {
+            current->right = new_node;
+            cout << "Data Berhasil di Masukkan" << endl;
+        } else {
+            insertNode(current->right, new_node);
+        }
+    } else {
+        cout << "Data Sudah Ada!" << endl;
+    }
+}
+
+// Fungsi untuk melakukan penelusuran InOrder pada Binary Tree
+void traverseInOrder(Node* current) {
+    if (current == NULL) {
+        return;
+    }
+
+    traverseInOrder(current->left);
+    cout << current->data << " ";
+    traverseInOrder(current->right);
+}
+
+// Fungsi untuk melakukan penelusuran PreOrder pada Binary Tree
+void traversePreOrder(Node* current) {
+    if (current == NULL) {
+        return;
+    }
+
+    cout << current->data << " ";
+    traversePreOrder(current->left);
+    traversePreOrder(current->right);
+}
+
+// Fungsi untuk melakukan penelusuran PostOrder pada Binary Tree
+void traversePostOrder(Node* current) {
+    if (current == NULL) {
+        return;
+    }
+
+    traversePostOrder(current->left);
+    traversePostOrder(current->right);
+    cout << current->data << " ";
+}
+
+// Fungsi untuk mencari data pada Binary Tree
+Node* search(int val) {
+    return searchNode(root, val);
+}
+
+// Fungsi rekursif untuk mencari data pada Binary Tree
+Node* searchNode(Node* current, int val) {
+    if (current == NULL || current->data == val) {
+        return current;
+    } else if (val < current->data) {
+        return searchNode(current->left, val);
+    } else {
+        return searchNode(current->right, val);
+    }
+}
+
+// Fungsi untuk menghapus simpul (node) pada Binary Tree
+Node* deleteNode(Node* current, int value) {
+    if (current == NULL) {
+        return current;
+    }
+
+    if (value < current->data) {
+        current->left = deleteNode(current->left, value);
+    } else if (value > current->data) {
+        current->right = deleteNode(current->right, value);
+    } else {
+        if (current->left == NULL) {
+            Node* temp = current->right;
+            delete current;
+            return temp;
+        } else if (current->right == NULL) {
+            Node* temp = current->left;
+            delete current;
+            return temp;
+        }
+
+        Node* temp = minValueNode(current->right);
+        current->data = temp->data;
+        current->right = deleteNode(current->right, temp->data);
+    }
+
+    return current;
+}
+
+// Fungsi untuk mencari simpul dengan nilai terkecil pada Binary Tree
+Node* minValueNode(Node* current) {
+    Node* temp = current;
+    while (temp && temp->left != NULL) {
+        temp = temp->left;
+    }
+    return temp;
+}
+
+// Fungsi untuk menghapus semua simpul pada Binary Tree
+void clear() {
+    clearTree(root);
+    root = NULL;
+    cout << "Binary Tree Cleared." << endl;
+}
+
+// Fungsi rekursif untuk menghapus semua simpul pada Binary Tree
+void clearTree(Node* current) {
+    if (current == NULL) {
+        return;
+    }
+
+    clearTree(current->left);
+    clearTree(current->right);
+    delete current;
+}
+
+// Fungsi untuk menampilkan Binary Tree
+void display() {
+    displayTree(root, 0);
+}
+
+// Fungsi rekursif untuk menampilkan Binary Tree dengan format indentasi
+void displayTree(Node* current, int space) {
+    if (current == NULL) {
+        return;
+    }
+
+    space += SPACE;
+    displayTree(current->right, space);
+    cout << endl;
+
+    for (int i = SPACE; i < space; i++) {
+        cout << " ";
+    }
+    cout << current->data << "\n";
+
+    displayTree(current->left, space);
+}
+};
+
+int main() {
+BinaryTree tree;
+int option, val;
+
+
+do {
+    system("cls");
+    cout << "BINARY TREE DISPLAY: " << endl;
+    tree.display();
+    cout << endl;
+
+    cout << "\n============ MENU : BINARY TREE ============ " << endl;
+    cout << "| 1. Insert Node                           |" << endl;
+    cout << "| 2. Transverse                            |" << endl;
+    cout << "| 3. Search Node                           |" << endl;
+    cout << "| 4. Delete Node                           |" << endl;
+    cout << "| 5. Clear Node                            |" << endl;
+    cout << "| 6. Exit Program                          |" << endl;
+    cout << "============================================ " << endl;
+    cout << "Pilih menu: ";
+    cin >> option;
+    cout << endl;
+
+    switch (option) {
+        case 1:
+            cout << "SISIPKAN NODE KE BINARY TREE" << endl;
+            cout << "Masukkan data TREE NODE yang ingin disisipkan ke dalam Binary Tree: ";
+            cin >> val;
+            tree.insert(val);
+            cout << endl;
+            break;
+        case 2:
+            cout << "PENELUSURAN BINARY TREE" << endl;
+            cout << "InOrder: ";
+            tree.traverseInOrder(tree.root);
+            cout << endl;
+
+            cout << "PreOrder: ";
+            tree.traversePreOrder(tree.root);
+            cout << endl;
+
+            cout << "PostOrder: ";
+            tree.traversePostOrder(tree.root);
+            cout << endl;
+            break;
+        case 3:
+            cout << "PENCARIAN NODE BINARY TREE" << endl;
+            cout << "Masukkan data TREE NODE yang ingin dicari di dalam Binary Tree: ";
+            cin >> val;
+            if (tree.search(val) != NULL) {
+                cout << "Data ditemukan dalam Binary Tree." << endl;
+            } else {
+                cout << "Data tidak ditemukan dalam Binary Tree." << endl;
+            }
+            cout << endl;
+            break;
+        case 4:
+            cout << "HAPUS NODE" << endl;
+            cout << "Masukkan nilai yang ingin dihapus: ";
+            cin >> val;
+            tree.root = tree.deleteNode(tree.root, val);
+            cout << "Node dengan nilai " << val << " telah dihapus." << endl << endl;
+            break;
+        case 5:
+            cout << "BERSIHKAN BINARY TREE" << endl;
+            tree.clear();
+            cout << endl;
+            break;
+         case 6:
+            break;
+        default:
+            cout << "Pilihan tidak valid. Mohon masukkan nomor menu yang valid." << endl;
+    }
+    system("pause");
+} while (option != 6);
+
+return 0;
 }
